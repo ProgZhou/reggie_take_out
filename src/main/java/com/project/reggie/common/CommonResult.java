@@ -3,6 +3,7 @@ package com.project.reggie.common;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
-public class CommonResult<T>{
+public class CommonResult<T> implements Serializable {
 
     /*
     * 响应状态码

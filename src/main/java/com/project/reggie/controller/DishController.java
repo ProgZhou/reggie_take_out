@@ -99,7 +99,13 @@ public class DishController {
     @GetMapping("/{id}")
     public CommonResult<DishDto> getDish(@PathVariable("id") Long id) {
         log.info("查询菜品: {}", id);
+        String dishKey = "Dish_" + id + "_byId";
+        DishDto dto = (DishDto) redisTemplate.opsForValue().get(dishKey);
+        if(dto != null) {
+            return CommonResult.success(dto);
+        }
         DishDto dish = dishService.getDishByIdWithFlavor(id);
+        redisTemplate.opsForValue().set(dishKey, dish, 5, TimeUnit.MINUTES);
 
         return CommonResult.success(dish);
     }

@@ -16,6 +16,10 @@ spring:
     port: 6379
     password:
     database: 0
+  cache:
+    redis:
+      time-to-live: 180000  #设置缓存数据的过期时间
+    type: redis
 
 
 mybatis-plus:

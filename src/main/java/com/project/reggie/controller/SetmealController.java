@@ -12,6 +12,8 @@ import com.project.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ public class SetmealController {
     * 新增套餐
     * */
     @PostMapping
+    @CacheEvict(value = "setmealCache", allEntries = true)
     public CommonResult<String> addSetMeal(@RequestBody SetmealDto setmealDto) {
         log.info("接收到数据: {}", setmealDto);
 
@@ -94,6 +97,7 @@ public class SetmealController {
 
 
     @DeleteMapping
+    @CacheEvict(value = "setmealCache", allEntries = true)    //当删除某个套餐时，需要删除缓存中的套餐数据
     public CommonResult<String> deleteSetMeals(@RequestParam("ids") String ids) {
         log.info("待删除的套餐id: {}", ids);
 
@@ -124,6 +128,8 @@ public class SetmealController {
     * 根据分类查询套餐信息
     * */
     @GetMapping("/list")
+    //将方法的返回结果存入redis缓存，返回结果如果是引用数据类型需要实现Serializable接口实现序列化
+    @Cacheable(value = "setmealCache", key = "'setMeal' + #setmeal.categoryId + '_' + #setmeal.status")
     public CommonResult<List<Setmeal>> getList(Setmeal setmeal) {
         LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Setmeal::getCategoryId, setmeal.getCategoryId());
