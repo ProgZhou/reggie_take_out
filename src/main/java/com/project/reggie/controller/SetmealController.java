@@ -54,9 +54,9 @@ public class SetmealController {
 
 
     @GetMapping("/{id}")
+    @Cacheable(value = "setmealCache", key = "'setMeal_' + #id + '_' + 'byId'")
     public CommonResult<SetmealDto> getSetmealById(@PathVariable("id") Long id) {
         log.info("待查询的菜品: {}", id);
-
         SetmealDto dto = setmealService.getSetMealWithDishById(id);
 
         return CommonResult.success(dto);
